@@ -1,0 +1,35 @@
+{
+  "short_name": "One Night",
+  "name": "Uma's extended family game",
+  "icons": [
+    {
+      "src": "images/icon96x96.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "icon152x152.png",
+      "type": "image/png",
+      "sizes": "152x152"
+    },
+    {
+      "src": "icon384x384.png",
+      "type": "image/png",
+      "sizes": "384x384"
+    },
+    {
+      "src": "icon512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "icon.png",
+      "type": "image/png",
+      "sizes": "690x690"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#263668",
+  "background_color": "#fff"
+}

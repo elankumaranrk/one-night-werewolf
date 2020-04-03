@@ -1,0 +1,115 @@
+.card {
+  
+  border-radius: 16px;
+
+  padding: 4px 0px;
+  margin: 4px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  
+
+  .card-image {
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 16px;
+    }
+  }
+
+  position: relative;
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 200px;
+    font-size: 16px;
+    flex-direction: column;
+    text-align: center;
+    width: 100%;
+  }
+  .name {
+    margin-bottom: 4px;
+    display: none;
+  }
+
+  &.friends,
+  &.owned {
+    flex-direction: column;
+    transform: scale(0.95);
+    
+    .info {
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      left: 0;
+      right: 0;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      background-color: rgba(68, 78, 109, 0.9);
+      padding: 8px;
+      bottom: 4px;
+      position: absolute;
+    }
+    .name {
+      display: block;
+      font-size: large;
+      font-weight: 500;
+      padding-bottom: 8px;
+    }
+  }
+
+  &.owned {
+    .info {
+      background-color: rgba(223, 198, 59, 0.7);
+    }
+    // background-color: #dfc63b;
+  }
+}
+
+.card-wrapper {
+  position: relative;
+  .overlay {
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: -10;
+    border-radius: 16px;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+    border: 1px solid transparent;
+    transition: opacity,
+      border-color 250ms cubic-bezier(0.6, -0.28, 0.735, 0.045);
+  }
+  .overlay.allow {
+    z-index: 10;
+    opacity: 0.9;
+    background-color: #fff;
+    border-color: #0B332D;
+  }
+  .overlay.disallow {
+    z-index: 10;
+    opacity: 0.9;
+    background-color: #fff;
+    border-color: #971500;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .card-wrapper {
+    padding: 0px;
+  }
+}
+
+.MuiAvatar-colorDefault {
+  background-color: #364269;
+}

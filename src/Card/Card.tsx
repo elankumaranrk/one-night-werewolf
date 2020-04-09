@@ -11,8 +11,10 @@ import "./styles.scss";
 import SwapSuccess from "./SwapSuccess";
 import useWindowSize from "../useWindowSize";
 import Roles from "../Roles";
+import Zoom from '@material-ui/core/Fade'
 
 export type Props = {
+  order: number;
   playerName: string;
   playerId: string;
   role: string;
@@ -41,7 +43,8 @@ export default function Card({
   onRevel,
   mode = "evening",
   gameId,
-  swaps
+  swaps,
+  order
 }: Props) {
   const [flip, setFlip] = React.useState(false || mode === "end");
   const [localSwap, setLocalSwap] = React.useState(false);
@@ -59,7 +62,9 @@ export default function Card({
   }, [role, gameId, mode]);
 
   return (
+    <Zoom  in timeout={order *  150}>
     <div className="card-wrapper" ref={dropRef}>
+      
       <div className={clsx("card", stack)} style={{ opacity }}>
         <span className="name">
         {stack === "owned" ? "You" : playerName}
@@ -135,5 +140,6 @@ export default function Card({
       </div>
       <SwapSuccess open={localSwap} setOpen={setLocalSwap} />
     </div>
+    </Zoom>
   );
 }

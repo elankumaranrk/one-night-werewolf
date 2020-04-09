@@ -44,8 +44,12 @@ const theme = createMuiTheme({
     }
   },
   palette: {
-    primary: colors.yellow,
-    secondary: colors.yellow,
+    primary: {
+      main: '#fff'
+    },
+    secondary: {
+      main: '#fff'
+    },
     action: {
       disabled: "#999",
       disabledBackground: "#49557d"

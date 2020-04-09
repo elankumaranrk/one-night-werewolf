@@ -82,6 +82,7 @@ function App() {
               <div className="flex-center">
                 {cards.withMe && (
                   <Card
+                    order={1}
                     swaps={swaps}
                     onRevel={fns.handleRevels("self", clicks.self, 1)}
                     mode={game.mode}
@@ -102,8 +103,9 @@ function App() {
                     role={cards.withMe.role}
                   />
                 )}
-                {cards.withFriends.map(card => (
+                {cards.withFriends.map((card, idx) => (
                   <Card
+                  order={idx + 1}
                     swaps={swaps}
                     onRevel={fns.handleRevels("others", clicks.others, 2)}
                     mode={game.mode}
@@ -131,8 +133,9 @@ function App() {
             <div className="flex-center">
               <h2>On Board</h2>
               <div className="flex-center">
-                {cards.inCenter.map(card => (
+                {cards.inCenter.map((card, idx) => (
                   <Card
+                    order={1 + cards.withFriends.length + idx}
                     swaps={swaps}
                     onRevel={fns.handleRevels("others", clicks.others, 1)}
                     disabled={!(game.mode === "night" && clicks.others > 0)}

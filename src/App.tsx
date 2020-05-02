@@ -15,6 +15,15 @@ const theme = createMuiTheme({
         backgroundColor: "#263668"
       }
     },
+    MuiCheckbox: {
+      colorSecondary: {
+        color: '#fff',
+        '&$checked': {
+          color: '#fff',
+        },
+      },
+    },
+   
     MuiDialog: {
       paper: {
         color: "#fff",

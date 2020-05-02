@@ -19,16 +19,13 @@ export default function SimpleDialogDemo({onCreate, disabled = false}: {onCreate
         onCreate(players);
       };
 
-    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setPlayers(event.target.value as string[]);
-      };
-  
+
     return (
       <div className="flex-wrap">
         <Button disabled={disabled} style={{margin:'8px', width:'320px'}} variant="outlined" color="secondary" onClick={handleOpen}>
           New Game
         </Button>
-        <Dialog players={players} setPlayers={handleChange} onGenerate={handleGenerate} open={open} onClose={handleClose} />
+        <Dialog players={players} setPlayers={setPlayers} onGenerate={handleGenerate} open={open} onClose={handleClose} />
       </div>
     );
   }

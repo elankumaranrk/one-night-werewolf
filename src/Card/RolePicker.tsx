@@ -34,6 +34,7 @@ export default function RolePicker({ onSelect, selected, children }: Props) {
   return (
     <>
       <Button
+        className="role-picker"
         variant="text"
         aria-controls="simple-menu"
         aria-haspopup="true"

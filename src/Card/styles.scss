@@ -1,7 +1,6 @@
 .card {
-  
-  border-radius: 16px;
-
+  position: relative;
+  border-radius: 20px;
   padding: 4px 0px;
   margin: 4px;
   text-align: center;
@@ -13,11 +12,12 @@
   .card-image {
     -webkit-user-select: none;
     -webkit-touch-callout: none; 
+    border: 4px solid #5d6270;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    border-radius: 16px;
+    border-radius: 20px;
     box-shadow: 0px -6px 10px rgb(60, 74, 116), 0px 4px 15px rgba(0, 0, 0, 0.15);
     img {
       display: block;
@@ -52,18 +52,23 @@
   &.owned {
     flex-direction: column;
     transform: scale(0.95);
+
+    .vote {
+      display: unset;
+    }
     
     .info {
+      z-index: 2;
       border-bottom-left-radius: 16px;
       border-bottom-right-radius: 16px;
-      left: 0;
-      right: 0;
+      left: 4px;
+      right: 4px;
       align-items: center;
       display: flex;
       flex-direction: column;
       background-color: rgba(68, 78, 109, 0.9);
       padding: 8px;
-      bottom: 4px;
+      bottom: 6px;
       position: absolute;
     }
     .name {
@@ -71,6 +76,9 @@
       font-size: large;
       font-weight: 500;
       padding-bottom: 12px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
 
@@ -91,7 +99,7 @@
     top: 0;
     bottom: 0;
     z-index: -10;
-    border-radius: 16px;
+    border-radius: 20px;
     opacity: 0;
     display: flex;
     justify-content: center;
@@ -122,4 +130,51 @@
 
 .MuiAvatar-colorDefault {
   background-color: #364269;
+}
+.vote {
+  position: absolute;
+  font-size: 56px;
+  background-color: #263668;
+  opacity: 0.97;
+  border-radius: 20px;
+  top: 42px;
+  right: 0;
+  left: 0;
+  bottom: 4px;
+  padding-top: 28px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  text-shadow: -3px 2px 5px #222;
+  cursor: pointer;
+  border: 4px solid #5d6270;
+  &.selected {
+    border-color:  #fff;
+  }
+  &.end {
+    background-color: transparent;
+  }
+
+}
+
+
+
+.center .vote {
+  display: none;
+}
+
+.timer {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  .digit {
+    display: inline-block;
+    min-width: 28px;
+  }
+  .seperator {
+    font-size: 16px;
+    padding-right: 8px;
+  }
 }

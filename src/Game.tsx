@@ -14,16 +14,17 @@ import Card from "./Card";
 import CreateGame from "./CreateGame";
 import { generatePreview, HTML5toTouch } from "./Dnd";
 import useRemoteData from "./useRemoteData";
+import Timer from "./Timer";
 
 const defaultActions = {
   clicks: {
     self: 0,
-    others: 0
+    others: 0,
   },
   swaps: {
     self: 0,
-    others: 0
-  }
+    others: 0,
+  },
 };
 
 export interface User {
@@ -31,11 +32,28 @@ export interface User {
 }
 
 function App() {
+  const [canVote, setCanVote] = React.useState(false);
+  const [timer, setTimer] = React.useState<Date | null>(null);
   const currentUser = React.useContext(UserContext);
   const { game, fns, cards, users, isAdmin } = useRemoteData(currentUser);
 
+  React.useEffect(() => {
+    if (game.mode === "morning" && !timer) {
+      let fiveFromNow = new Date();
+      const fiveMins = fiveFromNow.getMinutes() + 5;
+      fiveFromNow.setMinutes(fiveMins);
+      setTimer(fiveFromNow);
+    } else if (game.mode !== "morning") {
+      setTimer(null);
+    }
+  }, [game.mode, timer]);
+
   const { withMe } = cards;
   const { clicks, swaps } = withMe ? withMe : defaultActions;
+  const cStatus  = clicks.others + clicks.self > 0 ? (clicks.others + clicks.self ) + ' revels' : undefined;
+  const sStatus = swaps.self + swaps.others > 0 ? (swaps.self + swaps.others ) + ' swaps' : undefined;
+  const stats = [cStatus, sStatus].filter(Boolean).join(' & ')
+  
 
   return (
     <div className="flex-center" style={{ flexDirection: "column" }}>
@@ -66,23 +84,33 @@ function App() {
             End
           </Button>
           {isAdmin && <CreateGame onCreate={fns.createGame} />}
+          <div className="timer">
+            {timer && !canVote && (
+              <Timer onEnd={() => setCanVote(true)} from={timer} />
+            )}
+            {canVote && game.mode === "morning" && <span>Vote Now!</span>}
+          </div>
         </div>
       </div>
       {game.id && (
         <DndProvider backend={MultiBackend} options={HTML5toTouch}>
           <Preview generator={generatePreview} />
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
+          <div key={game.id} style={{ display: "flex", flexWrap: "wrap" }}>
             <div
               className="flex-center"
               style={{
                 marginTop: "32px",
-                flexDirection: "column"
+                flexDirection: "column",
               }}>
               <h2>Players</h2>
+              
               <div className="flex-center">
                 {cards.withMe && (
                   <Card
+                    votes={cards.withMe.votes || 0}
+                    selected={false}
                     order={1}
+                    canVote={true}
                     swaps={swaps}
                     onRevel={fns.handleRevels("self", clicks.self, 1)}
                     mode={game.mode}
@@ -99,13 +127,17 @@ function App() {
                     key={currentUser?.uid}
                     token={cards.withMe?.token}
                     setToken={fns.setToken}
-                    playerName={users[cards.withMe?.player].name}
+                    playerName={game.mode === "night" ? stats : 'You'}
                     role={cards.withMe.role}
                   />
                 )}
                 {cards.withFriends.map((card, idx) => (
                   <Card
-                  order={idx + 1}
+                    canVote={true}
+                    votes={card.votes || 0}
+                    selected={cards.withMe?.suspected === card.player}
+                    onVote={fns.castVote}
+                    order={idx + 1}
                     swaps={swaps}
                     onRevel={fns.handleRevels("others", clicks.others, 2)}
                     mode={game.mode}
@@ -128,9 +160,9 @@ function App() {
             className="flex-center"
             style={{
               marginTop: "32px",
-              flexDirection: "column"
+              flexDirection: "column",
             }}>
-            <div className="flex-center">
+            <div key={game.id + "onboard"} className="flex-center">
               <h2>On Board</h2>
               <div className="flex-center">
                 {cards.inCenter.map((card, idx) => (
@@ -156,7 +188,7 @@ function App() {
               className="flex-center"
               style={{
                 flexDirection: "column",
-                marginTop: "64px"
+                marginTop: "64px",
               }}>
               <h2>Game Cards</h2>
               <div>

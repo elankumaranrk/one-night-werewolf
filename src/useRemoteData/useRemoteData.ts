@@ -11,6 +11,7 @@ interface Card {
   role: Role;
   token: Role;
   previous: Role;
+  suspected?: string;
   clicks: {
     self: number;
     others: number;
@@ -19,6 +20,7 @@ interface Card {
     self: number;
     others: number;
   };
+  votes?: number;
 }
 
 export interface Game {
@@ -34,6 +36,7 @@ export interface User {
     name: string;
     active: boolean;
     admin?: boolean;
+    photo: string;
   };
 }
 
@@ -42,8 +45,9 @@ const userReducer = (obj: User, item: DocumentType) => ({
   ...obj,
   [item.id]: {
     name: item.data().name,
-    active: true,
-    admin: item.data().admin
+    active: item.data().state === 'online',
+    admin: item.data().admin,
+    photo: item.data().photo
   }
 });
 
@@ -67,10 +71,13 @@ export default function useFetch(currentUser: firebase.User | undefined) {
   const [game, setGame] = React.useState<Game>({ id: "" });
   const [users, setUsers] = React.useState<User>({});
 
+  // presence();
+
   React.useEffect(() => {
     firebaseApp
       .firestore()
       .collection("users")
+      .orderBy("name")
       .onSnapshot(snapshot => setUsers(snapshot.docs.reduce(userReducer, {})));
   }, []);
 
@@ -97,6 +104,18 @@ export default function useFetch(currentUser: firebase.User | undefined) {
     };
     updateGame(withNewToken);
   };
+
+  const castVote = ((suspected: string) => {
+    if (!currentUser?.uid) return;
+    const withNewVote = {
+      roles: {
+        [currentUser?.uid]: {
+          suspected
+        }
+      }
+    };
+    updateGame(withNewVote);
+  })
 
   const swapRoles = (p1: string, r1: Role, p2: string, r2: Role) => {
     if (!p1 || !p2 || !currentUser?.uid) return;
@@ -141,7 +160,8 @@ export default function useFetch(currentUser: firebase.User | undefined) {
         ...withSwapedRoles.roles,
         [currentUser.uid]: {
           ...withSwapedRoles.roles[currentUser.uid],
-          swaps: { self: 0 }
+          swaps: { self: 0 },
+          clicks: { self: withSwapedRoles.roles[currentUser.uid].previous === Roles.Robber ? 1 : 0}
         }
       }
     };
@@ -168,7 +188,10 @@ export default function useFetch(currentUser: firebase.User | undefined) {
       });
   };
 
-  const players = () => (game.roles ? Object.values(game.roles) : []);
+  const players = () => (game.roles ? Object.values(game.roles).map((player: Card, idx: number, allPlayers: Card[]) => {
+    const votes = allPlayers.reduce((sum: number, p: Card) => player.player === p.suspected ? sum + 1: sum, 0);
+    return ({...player, votes});
+  }) : []);
   const cardWithMe = players().find(
     ({ player }) => player === currentUser?.uid
   );
@@ -240,7 +263,8 @@ export default function useFetch(currentUser: firebase.User | undefined) {
       createGame,
       setGameStatus,
       handleRevels,
-      handleSwaps
+      handleSwaps,
+      castVote
     }
   };
 }
